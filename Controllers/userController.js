@@ -61,3 +61,26 @@ module.exports.loginUser=async(req, res)=>{
     res.status(500).json({message: error.message})
   }
 }
+
+
+module.exports.getConnectUser = async (req, res) => {
+    try {
+        // Correction : récupérer l'ID depuis req.session.user
+        const id = req.session.user?._id;
+        
+        if (!id) {
+            return res.status(404).json({ message: "user not found" });
+        }
+        
+        const user = await userModel.findById(id);
+        
+        if (!user) {
+            return res.status(404).json({ message: "user not found" });
+        }
+        
+        res.status(200).json({ user });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+}
