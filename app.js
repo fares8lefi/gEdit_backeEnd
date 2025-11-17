@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const session = require('express-session');
 
 var usersRouter = require('./routes/usersRouter');
 require('dotenv').config();
@@ -17,6 +17,16 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// session middleware: ensures `req.session` exists
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'default_session_secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', usersRouter);
