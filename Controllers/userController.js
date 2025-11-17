@@ -45,7 +45,8 @@ module.exports.loginUser=async(req, res)=>{
       httpOnly: true,
       maxAge: maxTime * 1000,
     });
-
+    
+    await userModel.findByIdAndUpdate(user._id, { last_login: new Date() });
     res.status(200).json({
       success: true,
       user: {
