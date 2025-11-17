@@ -1,4 +1,4 @@
-const e = require('express');
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
 const userSchema = new mongoose.Schema(
@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema(
         },
         is_active: {
             type : Boolean,
-            enum : ['true', 'false'],
             default : 'false',
         },
         phone: {
@@ -51,19 +50,18 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-userSchema.pre("save", async function(next){
-    try{
-        const salt = await bcrypt.genSalt()
-        const user =this ;
-        user.password = await bcrypt.hash(user.password ,salt);
-        next();
-    }catch(err){
-        next(err);
-    }
-})
-userSchema.post("save", async function (res, req, next) {
-  console.log("user add -------------------------------");
+userSchema.pre('save', async function (next) {
+  try {
+    const user = this;
+    if (!user.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
+userSchema.post("save", async function (res, req, next) {});
 
 
 userSchema.statics.login = async function (email, password) {
