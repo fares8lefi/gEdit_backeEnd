@@ -1,4 +1,10 @@
 const userModel = require('../models/userModel');
+const jwt =require('jsonwebtoken')
+
+const maxTime=1000;
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.net_Secret, { expiresIn: maxTime });
+};
 
 module.exports.createUser =async(req,res) =>{
     try{
@@ -28,4 +34,29 @@ module.exports.createUser =async(req,res) =>{
         console.log(err);
         res.status(500).json({error:err.message})
     }
+}
+
+module.exports.loginUser=async(req, res)=>{
+   try{ 
+    const {email,password}=req.body;
+    const user =await userModel.login(email,password);
+    const token = createToken(user._id);
+       res.cookie("jwt_login", token, {
+      httpOnly: true,
+      maxAge: maxTime * 1000,
+    });
+
+    res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
+      token, // Envoyer le token dans la réponse
+    })
+  } catch (error) {
+    res.status(500).json({message: error.message})
+  }
 }
