@@ -79,6 +79,15 @@ userSchema.statics.login = async function (email, password) {
     throw new Error("email not found");
   }
 };
+
+userSchema.statics.verifPasswordUser = async function (id, currentPassord) {
+  const user = await this.findById(id)
+
+if (!user) return false;
+  const match = await bcrypt.compare(currentPassord, user.password);
+  return !!match;
+  
+}
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
