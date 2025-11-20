@@ -97,3 +97,28 @@ module.exports.lougOutUser = async (req,res)=>{
     }
 }
 
+odule.exports.changePassword = async (req,res)=>{
+    try{
+        const {currentPassord, newPassword} = req.body;
+        const id = req.session.user?._id;
+        console.log(id)
+        const change= await userModel.verifPasswordUser(id,currentPassord)
+        console.log(change)
+        if (change){
+          const salt = bcrypt.genSalt();
+          console.log("================",newPassword)
+          const hashedPassword= bcrypt.hash(newPassword, salt)
+          const update = await userModel.findByIdAndDelete(id,{
+            password:hashedPassword
+          })
+          return res.status(200).json({
+            success: true,
+            message: "Password updated successfully"
+            });
+        }
+       
+    }catch(error){
+        console.log(error)
+        res.status(500).json({ message: error.message });
+    }
+}
