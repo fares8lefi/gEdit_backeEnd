@@ -1,6 +1,7 @@
+const UserModel = require('moongose/models/user_model');
 const userModel = require('../models/userModel');
-const jwt =require('jsonwebtoken')
-
+const jwt =require('jsonwebtoken');
+const bcrypt =require('bcrypt');
 const maxTime=1000;
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.net_Secret, { expiresIn: maxTime });
@@ -63,9 +64,9 @@ module.exports.loginUser=async(req, res)=>{
 }
 
 
-module.exports.getConnectUser = async (req, res) => {
+module.exports.getConnectedUser = async (req, res) => {
     try {
-        // Correction : récupérer l'ID depuis req.session.user
+       
         const id = req.session.user?._id;
         
         if (!id) {
@@ -80,7 +81,19 @@ module.exports.getConnectUser = async (req, res) => {
         
         res.status(200).json({ user });
     } catch (error) {
-        console.log(error);
+        
         res.status(500).json({ message: error.message });
     }
 }
+
+module.exports.lougOutUser = async (req,res)=>{
+    try{
+         res.cookie("jwt_login", "", {
+         maxAge: 1,
+        httpOnly: true,
+    });
+    }catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
+
