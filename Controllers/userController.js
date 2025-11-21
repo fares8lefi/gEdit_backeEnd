@@ -2,11 +2,12 @@ const UserModel = require('moongose/models/user_model');
 const userModel = require('../models/userModel');
 const jwt =require('jsonwebtoken');
 const bcrypt =require('bcrypt');
-const maxTime=1000;
+maxTime=240*60 *60
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.net_Secret, { expiresIn: maxTime });
+    
+    const expiresIn =maxTime;
+    return jwt.sign({ id }, process.env.net_Secret, { expiresIn });
 };
-
 module.exports.createUser =async(req,res) =>{
     try{
             const {username,password,phone,email}=req.body;
@@ -39,13 +40,15 @@ module.exports.createUser =async(req,res) =>{
 
 module.exports.loginUser=async(req, res)=>{
    try{ 
+    
     const {email,password}=req.body;
     const user =await userModel.login(email,password);
     const token = createToken(user._id);
-       res.cookie("jwt_login", token, {
-      httpOnly: true,
-      maxAge: maxTime * 1000,
-    });
+             
+             res.cookie("jwt_login", token, {
+            httpOnly: true,
+            maxAge: maxTime,
+        });
     
     await userModel.findByIdAndUpdate(user._id, { last_login: new Date() });
     res.status(200).json({
@@ -56,7 +59,7 @@ module.exports.loginUser=async(req, res)=>{
         role: user.role,
         status: user.status,
       },
-      token, // Envoyer le token dans la réponse
+      token, 
     })
   } catch (error) {
     res.status(500).json({message: error.message})
@@ -97,7 +100,7 @@ module.exports.lougOutUser = async (req,res)=>{
     }
 }
 
-odule.exports.changePassword = async (req,res)=>{
+module.exports.changePassword = async (req,res)=>{
     try{
         const {currentPassord, newPassword} = req.body;
         const id = req.session.user?._id;
@@ -118,7 +121,38 @@ odule.exports.changePassword = async (req,res)=>{
         }
        
     }catch(error){
-        console.log(error)
+        
         res.status(500).json({ message: error.message });
+    }
+}
+
+module.exports.updatePersonnelData = async function(req ,res){
+    try{
+        const {username , email, phone , password}= req.body
+    
+        const id = req.session?.user?._id || req.user?._id;
+
+        if (!id) {
+            return res.status(401).json({ message: 'Not authenticated' });
+        }
+
+        const match = await userModel.verifPasswordUser(id, password);
+        if (match) {
+            
+            const updates = {};
+            if (username) updates.username = username;
+            if (email) updates.email = email;
+            if (phone) updates.phone = phone;
+
+            if (Object.keys(updates).length > 0) {
+                await userModel.findByIdAndUpdate(id, updates, { new: true });
+            }
+
+            return res.status(200).json({ message: 'success' });
+        }
+
+        return res.status(401).json({ message: 'Current password incorrect' });
+    }catch(error){
+        res.status(500).send({ message: error.message });
     }
 }
