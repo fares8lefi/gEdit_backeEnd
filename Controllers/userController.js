@@ -178,7 +178,7 @@ module.exports.updateUserStatus= async function (req , res){
 
 }
 
-module.exports.getUsersList =async function (req , res) {
+module.exports.getAllUsers =async function (req , res) {
     try{
         const users = await userModel.find();
         res.status(200).json({success: true,users})
