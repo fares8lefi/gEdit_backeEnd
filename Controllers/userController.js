@@ -156,3 +156,24 @@ module.exports.updatePersonnelData = async function(req ,res){
         res.status(500).send({ message: error.message });
     }
 }
+
+module.exports.updateUserStatus= async function (req , res){
+    try{
+
+        const id = req.session?.user?._id || req.user?._id;
+        const user=await userModel.findById(id);
+        if(!user){
+            res.status(500).json({success: false,message:"user not found"})
+        }
+      await userModel.findByIdAndUpdate(
+    id,
+    { is_active: true },
+    { new: true } 
+);
+        res.status(200).json({success: true,message:"user updated"})
+    }catch(error){
+        console.log("error",error)
+        res.status(500).json({ message: error.message });
+    }
+
+}

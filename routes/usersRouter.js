@@ -10,4 +10,5 @@ router.get('/getConnectedUser',requireAuthUser,userController.getConnectedUser)
 router.post('/lougOutUser',requireAuthUser,userController.lougOutUser)
 router.post('/changePassword',requireAuthUser,userController.changePassword)
 router.put('/updatePersonnelData',requireAuthUser,userController.updatePersonnelData)
+router.put('/updateUserStatus',requireAuthUser,userController.updateUserStatus)
 module.exports = router;
