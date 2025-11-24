@@ -6,6 +6,7 @@ var logger = require('morgan');
 const session = require('express-session');
 
 var usersRouter = require('./routes/usersRouter');
+var categorieRouter = require('./routes/categorieRouter');
 require('dotenv').config();
 var app = express();
 const {connectToDb} = require('./config/db');
@@ -31,7 +32,7 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/users', usersRouter);
-
+app.use('/api/categorie', categorieRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
