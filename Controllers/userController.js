@@ -183,6 +183,6 @@ module.exports.getAllUsers =async function (req , res) {
         const users = await userModel.find();
         res.status(200).json({success: true,users})
     }catch(error){
-        res.status(200).json({success: false, message :message.error})
+        res.status(500).json({success: false, message :message.error})
     }  
 }
