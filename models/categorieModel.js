@@ -4,11 +4,13 @@ const mongoose = require('mongoose')
 const categorieSchema = new mongoose.Schema({
     name :{
         type : String,
-        required : true,     
+        required : true,   
+        unique : true    
     },
      code :{
         type : Number,
-        required : true,     
+        required : true,   
+        unique : true  
     },
      description :{
         type : String,   
@@ -23,7 +25,15 @@ const categorieSchema = new mongoose.Schema({
     }
 
     })
-
+    
+categorieSchema.statics.verifNameCode = async function (code,name) {
+    const existName = await this.findOne({name :name});
+    const exisCode = await this.findOne({code :code});
+    if(existName||exisCode){
+        return true;
+    }
+    return false;    
+};
 
 
 const Categorie = mongoose.model('Categorie', categorieSchema);
