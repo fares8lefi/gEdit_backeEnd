@@ -15,5 +15,12 @@ module.exports.createCategorie = async function(req,res){
     }
 }
 
-
+module.exports.getAllCategories = async function(req,res){
+    try{
+        const categories = await  categorieModel.find();
+        res.status(200).json({categories });
+    }catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
 
