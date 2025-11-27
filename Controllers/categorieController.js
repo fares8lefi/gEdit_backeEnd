@@ -24,3 +24,23 @@ module.exports.getAllCategories = async function(req,res){
     }
 }
 
+module.exports.updateCategorie = async function(req,res){
+    try{
+        const {id ,name ,code , description} = req.body
+        const categories = await categorieModel.findById(id)
+        if (!id){
+            res.status(400).json({message :"id non valid"});
+        }
+        const update = await  categorieModel.findByIdAndDelete(id,{
+                name :name,
+                code :code
+        })
+        
+        
+        res.status(200).json({ message :"code et nom valide "});
+    }catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
