@@ -31,7 +31,7 @@ module.exports.updateCategorie = async function(req,res){
         if (!id){
             res.status(400).json({message :"id non valid"});
         }
-        const update = await  categorieModel.findByIdAndDelete(id,{
+        const update = await  categorieModel.findByIdAndUpdate(id,{
                 name :name,
                 code :code
         })
@@ -43,4 +43,22 @@ module.exports.updateCategorie = async function(req,res){
     }
 }
 
+module.exports.deleteCategorie = async function (req, res) {
+    try {
+        const id = req.params.id; 
+
+        const categorie = await categorieModel.findById(id);
+
+        if (!categorie) {
+            return res.status(400).json({ message: "categorie not found" });
+        }
+
+        await categorieModel.findByIdAndDelete(id);
+
+        res.status(200).json({ message: "categorie deleted successfully" });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
