@@ -7,6 +7,7 @@ const session = require('express-session');
 
 var usersRouter = require('./routes/usersRouter');
 var categorieRouter = require('./routes/categorieRouter');
+var suppliersRouter = require('./routes/suppliersRouter');
 require('dotenv').config();
 var app = express();
 const {connectToDb} = require('./config/db');
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/users', usersRouter);
 app.use('/api/categorie', categorieRouter);
+app.use('/api/supplier', suppliersRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
