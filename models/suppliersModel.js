@@ -6,7 +6,7 @@ const supplierModel = new mongoose.Schema({
     required: true,
   },
   code: {
-    type: number,
+    type: Number,
     unique: true,
   },
   email: {
@@ -18,7 +18,8 @@ const supplierModel = new mongoose.Schema({
     ],
   },
   phone: {
-    type: number,
+    type: Number,
+
     unique: true,
     required: true,
   },
