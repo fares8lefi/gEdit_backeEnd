@@ -9,4 +9,5 @@ router.post('/addSuppliers',suppliersController.addSuppliers)
 router.delete('/deleteSuppliers/:id',suppliersController.deleteSuppliers)
 router.put('/updateSuppliers/:id',suppliersController.updateSuppliers)
 router.get('/getActiveSuppliers',suppliersController.getActiveSuppliers)
+router.patch('/updateSuppliersStatus/:id',suppliersController.updateSuppliersStatus)
 module.exports = router;

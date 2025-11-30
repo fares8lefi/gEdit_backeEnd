@@ -69,3 +69,20 @@ module.exports.getActiveSuppliers = async function(req,res){
     res.status(500).json({ message: error.message });
   }
 }
+
+module.exports.updateSuppliersStatus = async function(req,res){
+  try{
+      const id = req.params.id
+      const suppliers = await supplierModel.findById(id)
+      if(!suppliers){
+        res.status(400).json({ success: false, message: " suppliers  not found " });
+      }
+       await supplierModel.findByIdAndUpdate(id,{
+         is_active : false
+       })
+         res .status(201).json({ success: true, message :"suppliers are inactive" });
+  }catch(error){
+    res.status(500).json({ message: error.message });
+  }
+}
+
