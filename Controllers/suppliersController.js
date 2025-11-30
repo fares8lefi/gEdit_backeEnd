@@ -86,3 +86,27 @@ module.exports.updateSuppliersStatus = async function(req,res){
   }
 }
 
+
+module.exports.serachSuppliersbyName = async function(req, res) {
+  try {
+      const { name } = req.body; 
+
+      if (!name) {
+        return res.status(400).json({ success: false, message: "Name is required" });
+      }
+
+      const suppliers = await supplierModel.find({ name }); 
+
+      if (!suppliers || suppliers.length === 0) {
+        return res.status(404).json({ success: false, message: "Suppliers not found" });
+      }
+
+      res.status(200).json({ success: true, suppliers });
+
+  } catch (error) {
+      console.log("error ===>", error);
+      res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+

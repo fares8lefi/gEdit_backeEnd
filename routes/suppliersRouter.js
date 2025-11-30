@@ -10,4 +10,5 @@ router.delete('/deleteSuppliers/:id',suppliersController.deleteSuppliers)
 router.put('/updateSuppliers/:id',suppliersController.updateSuppliers)
 router.get('/getActiveSuppliers',suppliersController.getActiveSuppliers)
 router.patch('/updateSuppliersStatus/:id',suppliersController.updateSuppliersStatus)
+router.get('/serachSuppliersbyName',suppliersController.serachSuppliersbyName)
 module.exports = router;
