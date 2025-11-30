@@ -8,4 +8,5 @@ const {requireAuthUser}= require("../middlewares/authMiddelwares");
 router.post('/addSuppliers',suppliersController.addSuppliers)
 router.delete('/deleteSuppliers/:id',suppliersController.deleteSuppliers)
 router.put('/updateSuppliers/:id',suppliersController.updateSuppliers)
+router.get('/getActiveSuppliers',suppliersController.getActiveSuppliers)
 module.exports = router;
