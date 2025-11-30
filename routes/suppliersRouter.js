@@ -1,0 +1,11 @@
+var express = require('express');
+var router = express.Router();
+
+const suppliersController=require('../Controllers/suppliersController')
+const {requireAuthUser}= require("../middlewares/authMiddelwares");
+
+
+router.post('/addSuppliers',suppliersController.addSuppliers)
+router.delete('/deleteSuppliers/:id',suppliersController.deleteSuppliers)
+router.put('/updateSuppliers/:id',suppliersController.updateSuppliers)
+module.exports = router;
