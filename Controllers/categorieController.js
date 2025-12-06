@@ -1,6 +1,6 @@
 const categorieModel = require('../models/categorieModel')
 
-module.exports.createCategorie = async function(req,res){
+module.exports.createcategory = async function(req,res){
     try{
          const {name , code}= req.body;
         const existingCategory = await categorieModel.verifNameCode(code, name);
