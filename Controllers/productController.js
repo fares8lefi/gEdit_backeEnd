@@ -4,7 +4,7 @@ const productModel = require("../models/productModel");
 
 module.exports.addProduct = async function (req, res) {
   try {
-   const {
+    const {
       code,
       barcode,
       name,
@@ -29,7 +29,9 @@ module.exports.addProduct = async function (req, res) {
       for (const catId of categories) {
         const catExists = await categorieModel.findById(catId);
         if (!catExists) {
-          return res.status(400).json({ message: `Catégorie introuvable: ${catId}` });
+          return res
+            .status(400)
+            .json({ message: `Catégorie introuvable: ${catId}` });
         }
       }
     }
@@ -46,38 +48,38 @@ module.exports.addProduct = async function (req, res) {
       categories: categories || [],
     });
 
-    return res.status(201).json({ message: "Produit ajouté avec succès", product: newProduct });
+    return res
+      .status(201)
+      .json({ message: "Produit ajouté avec succès", product: newProduct });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
 
-
-module.exports.delteProduct = async function(req,res){
-  try{
+module.exports.delteProduct = async function (req, res) {
+  try {
     const id = req.params.id;
-    console.log("id=====================<",id)
+    console.log("id=====================<", id);
     const verifId = await productModel.findById(id);
-    if(!verifId){
-      return res.status(400).json({ message: 'produit non trouvé'});
+    if (!verifId) {
+      return res.status(400).json({ message: "produit non trouvé" });
     }
-    await productModel.findByIdAndDelete(id)
-    return res.status(200).json({ message: "Produit supprimé avec succès"});
-  }catch(error){
-    res.status(500).json({message: error.message })
+    await productModel.findByIdAndDelete(id);
+    return res.status(200).json({ message: "Produit supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-
-module.exports.getAllProduct = async function(req ,res){
-try{
- const products = await productModel.find()
- if(products.length === 0 ){
-  return res.status(400).json({ message: 'aucun produit trouvé'});
- }
- return res.status(200).json({ message: "Produit supprimé avec succès"});
-}catch(error){
-  res.status(500).json({message: error.message })
-}
-}
+module.exports.getAllProduct = async function (req, res) {
+  try {
+    const products = await productModel.find();
+    if (products.length === 0) {
+      return res.status(400).json({ message: "aucun produit trouvé" });
+    }
+    return res.status(200).json({ message: "Produit supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
