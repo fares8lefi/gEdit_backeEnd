@@ -1,9 +1,10 @@
-const productModel = require("../models/categorieModel");
+const categorieModel = require("../models/categorieModel");
 const supplierModel = require("../models/suppliersModel");
+const productModel = require("../models/productModel");
 
 module.exports.addProduct = async function (req, res) {
   try {
-    const {
+   const {
       code,
       barcode,
       name,
@@ -26,7 +27,7 @@ module.exports.addProduct = async function (req, res) {
     // Vérifier si les catégories existent
     if (categories && categories.length > 0) {
       for (const catId of categories) {
-        const catExists = await productModel.findById(catId);
+        const catExists = await categorieModel.findById(catId);
         if (!catExists) {
           return res.status(400).json({ message: `Catégorie introuvable: ${catId}` });
         }
@@ -51,3 +52,5 @@ module.exports.addProduct = async function (req, res) {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
