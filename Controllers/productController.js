@@ -70,3 +70,14 @@ module.exports.delteProduct = async function(req,res){
 }
 
 
+module.exports.getAllProduct = async function(req ,res){
+try{
+ const products = await productModel.find()
+ if(products.length === 0 ){
+  return res.status(400).json({ message: 'aucun produit trouvé'});
+ }
+ return res.status(200).json({ message: "Produit supprimé avec succès"});
+}catch(error){
+  res.status(500).json({message: error.message })
+}
+}
