@@ -54,3 +54,19 @@ module.exports.addProduct = async function (req, res) {
 };
 
 
+module.exports.delteProduct = async function(req,res){
+  try{
+    const id = req.params.id;
+    console.log("id=====================<",id)
+    const verifId = await productModel.findById(id);
+    if(!verifId){
+      return res.status(400).json({ message: 'produit non trouvé'});
+    }
+    await productModel.findByIdAndDelete(id)
+    return res.status(200).json({ message: "Produit supprimé avec succès"});
+  }catch(error){
+    res.status(500).json({message: error.message })
+  }
+}
+
+
