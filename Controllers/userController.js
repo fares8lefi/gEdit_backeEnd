@@ -1,8 +1,7 @@
-const UserModel = require('moongose/models/user_model');
 const userModel = require('../models/userModel');
-const jwt =require('jsonwebtoken');
-const bcrypt =require('bcrypt');
-maxTime=240*60 *60
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const maxTime = 240 * 60 * 60;
 const createToken = (id) => {
     
     const expiresIn =maxTime;
@@ -89,13 +88,14 @@ module.exports.getConnectedUser = async (req, res) => {
     }
 }
 
-module.exports.lougOutUser = async (req,res)=>{
-    try{
-         res.cookie("jwt_login", "", {
-         maxAge: 1,
-        httpOnly: true,
-    });
-    }catch(error){
+module.exports.logOutUser = async (req, res) => {
+    try {
+        res.cookie("jwt_login", "", {
+            maxAge: 1,
+            httpOnly: true,
+        });
+        res.status(200).json({ success: true, message: "Logged out successfully" });
+    } catch (error) {
         res.status(500).json({ message: error.message });
     }
 }
@@ -105,14 +105,14 @@ module.exports.changePassword = async (req,res)=>{
         const {currentPassord, newPassword} = req.body;
         const id = req.session.user?._id;
         console.log(id)
-        const change= await userModel.verifPasswordUser(id,currentPassord)
+        const change = await userModel.verifPasswordUser(id, currentPassord)
         console.log(change)
-        if (change){
-          const salt = bcrypt.genSalt();
-          console.log("================",newPassword)
-          const hashedPassword= bcrypt.hash(newPassword, salt)
-          const update = await userModel.findByIdAndDelete(id,{
-            password:hashedPassword
+        if (change) {
+          const salt = await bcrypt.genSalt();
+          console.log("================", newPassword)
+          const hashedPassword = await bcrypt.hash(newPassword, salt)
+          const update = await userModel.findByIdAndUpdate(id, {
+            password: hashedPassword
           })
           return res.status(200).json({
             success: true,
@@ -183,6 +183,6 @@ module.exports.getAllUsers =async function (req , res) {
         const users = await userModel.find();
         res.status(200).json({success: true,users})
     }catch(error){
-        res.status(500).json({success: false, message :message.error})
+        res.status(500).json({success: false, message: error.message})
     }  
 }
