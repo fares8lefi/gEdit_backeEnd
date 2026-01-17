@@ -9,7 +9,7 @@ const {isAdmin}= require("../middlewares/isAdminMiddelware");
 router.post('/createUser',userController.createUser)
 router.post('/loginUser',userController.loginUser)
 router.get('/getConnectedUser',requireAuthUser,userController.getConnectedUser)
-router.post('/lougOutUser',requireAuthUser,userController.lougOutUser)
+router.post('/logOutUser', requireAuthUser, userController.logOutUser);
 router.post('/changePassword',requireAuthUser,userController.changePassword)
 router.put('/updatePersonnelData',requireAuthUser,userController.updatePersonnelData)
 router.put('/updateUserStatus',requireAuthUser,userController.updateUserStatus)

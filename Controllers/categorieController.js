@@ -1,14 +1,14 @@
 const categorieModel = require('../models/categorieModel')
 
-module.exports.createcategory = async function(req,res){
-    try{
-         const {name , code}= req.body;
+module.exports.createcategory = async function(req, res) {
+    try {
+        const {name, code} = req.body;
         const existingCategory = await categorieModel.verifNameCode(code, name);
-        if(existingCategory){
-            res.status(400).json({success: false , message :"categorie existe" })
+        if (existingCategory) {
+            return res.status(400).json({success: false, message: "categorie existe"});
         }
-        const categories = await categorieModel.create({name ,code})
-        res.status(200).json({categories})
+        const categories = await categorieModel.create({name, code});
+        res.status(200).json({success: true, categories});
     }catch(error){
         console.log(error)
       res.status(500).json({ message: error.message });
@@ -24,20 +24,25 @@ module.exports.getAllCategories = async function(req,res){
     }
 }
 
-module.exports.updateCategorie = async function(req,res){
-    try{
-        const {id ,name ,code , description} = req.body
-        const categories = await categorieModel.findById(id)
-        if (!id){
-            res.status(400).json({message :"id non valid"});
+module.exports.updateCategorie = async function(req, res) {
+    try {
+        const {id, name, code} = req.body;
+        
+        if (!id) {
+            return res.status(400).json({success: false, message: "id non valid"});
         }
-        const update = await  categorieModel.findByIdAndUpdate(id,{
-                name :name,
-                code :code
-        })
         
+        const categorie = await categorieModel.findById(id);
+        if (!categorie) {
+            return res.status(404).json({success: false, message: "categorie not found"});
+        }
         
-        res.status(200).json({ message :"code et nom valide "});
+        const update = await categorieModel.findByIdAndUpdate(id, {
+            name,
+            code
+        }, {new: true});
+        
+        res.status(200).json({success: true, message: "categorie updated successfully", categorie: update});
     }catch(error){
         res.status(500).json({ message: error.message });
     }

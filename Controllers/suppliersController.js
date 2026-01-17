@@ -20,21 +20,21 @@ module.exports.updateSuppliers = async function (req, res) {
   try {
     const { name, code, email, phone, address } = req.body;
     const id = req.params.id;
-    const verifId = await supplierModel.find({id});
+    const verifId = await supplierModel.findById(id);
     if (!verifId) {
-      res.status(400).json({ success: false, message: "suppliers not found " });
+      return res.status(404).json({ success: false, message: "suppliers not found" });
     }
-    await supplierModel.findByIdAndUpdate(id, {
-      name,
-      code,
-      email,
-      phone,
-      address,
-    });
-    const suppliers = await supplierModel.findById(id);
-    res.status(201).json({ success: true, supplier:suppliers });
+    const updates = {};
+    if (name !== undefined) updates.name = name;
+    if (code !== undefined) updates.code = code;
+    if (email !== undefined) updates.email = email;
+    if (phone !== undefined) updates.phone = phone;
+    if (address !== undefined) updates.address = address;
+
+    const suppliers = await supplierModel.findByIdAndUpdate(id, updates, { new: true });
+    res.status(200).json({ success: true, supplier: suppliers });
   } catch (error) {
-    console.log("error===>",error)
+    console.log("error==>", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -43,48 +43,49 @@ module.exports.deleteSuppliers = async function (req, res) {
   try {
     const id = req.params.id;
 
-    const verifId = await supplierModel.find({ id });
+    const verifId = await supplierModel.findById(id);
 
-    if (!verifId || verifId.length === 0) {
-      res.status(400).json({ success: false, message: "suppliers not found " });
+    if (!verifId) {
+      return res.status(404).json({ success: false, message: "suppliers not found" });
     }
-    await supplierModel.findOneAndDelete(id);
+    await supplierModel.findByIdAndDelete(id);
     res
-      .status(201)
-      .json({ success: true, message: "suppliers delete successflly" });
+      .status(200)
+      .json({ success: true, message: "suppliers delete successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 
-module.exports.getActiveSuppliers = async function(req,res){
-  try{
-      const suppliers = await  supplierModel.find({ is_active : true})
-      if(suppliers.length ===0){
-        res.status(400).json({ success: false, message: " no suppliers found " });
-      }
-         res .status(201).json({ success: true, suppliers });
-  }catch(error){
+module.exports.getActiveSuppliers = async function(req, res) {
+  try {
+    const suppliers = await supplierModel.find({ is_active: true });
+    if (suppliers.length === 0) {
+      return res.status(404).json({ success: false, message: "no active suppliers found" });
+    }
+    res.status(200).json({ success: true, suppliers });
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
 
-module.exports.updateSuppliersStatus = async function(req,res){
-  try{
-      const id = req.params.id
-      const suppliers = await supplierModel.findById(id)
-      if(!suppliers){
-        res.status(400).json({ success: false, message: " suppliers  not found " });
-      }
-       await supplierModel.findByIdAndUpdate(id,{
-         is_active : false
-       })
-         res .status(201).json({ success: true, message :"suppliers are inactive" });
-  }catch(error){
+module.exports.updateSuppliersStatus = async function(req, res) {
+  try {
+    const id = req.params.id;
+    const suppliers = await supplierModel.findById(id);
+    if (!suppliers) {
+      return res.status(404).json({ success: false, message: "suppliers not found" });
+    }
+    await supplierModel.findByIdAndUpdate(id, {
+      is_active: false
+    });
+    res.status(200).json({ success: true, message: "suppliers are inactive" });
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
+
 
 
 module.exports.serachSuppliersbyName = async function(req, res) {
@@ -109,4 +110,15 @@ module.exports.serachSuppliersbyName = async function(req, res) {
   }
 }
 
+module.exports.getAllSuppliers = async function(req, res) {
+  try {
+    const suppliers = await supplierModel.find();
+    if (suppliers.length === 0) {
+      return res.status(404).json({ success: false, message: "no suppliers found" });
+    }
+    res.status(200).json({ success: true, suppliers });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
