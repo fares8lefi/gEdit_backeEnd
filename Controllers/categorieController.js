@@ -15,7 +15,7 @@ module.exports.createcategory = async function(req, res) {
     }
 }
 
-module.exports.getAllCategories = async function(req,res){
+module.exports.getAllCategories = async function(res){
     try{
         const categories = await  categorieModel.find();
         res.status(200).json({categories });
