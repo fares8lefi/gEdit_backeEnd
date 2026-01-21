@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/users", usersRouter);
 app.use("/api/categorie", categorieRouter);
 app.use("/api/supplier", suppliersRouter);
-app.use("/api/productRouter", productRouter);
+app.use("/api/product", productRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -55,8 +55,10 @@ app.use(function (err, req, res, next) {
 });
 const http = require("http");
 const server = http.createServer(app);
-server.listen(process.env.port, () => {
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, '0.0.0.0', () => {
   connectToDb();
-  console.log("Server is running on port 3000");
-});
+  console.log(`Server is running on port ${PORT}`);
+})
 module.exports = app;
