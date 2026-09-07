@@ -141,20 +141,28 @@ const getProductsByCategories = async (companyId) => {
 
 // Nombre de produits par catégorie
 const getSumProductByCategorie = async (companyId) => {
-  const groups = await prisma.product.groupBy({
-    by: ['categoryId'],
-    where: { companyId },
-    _count: { id: true },
+  const result = await prisma.$queryRaw`
+    SELECT categoryId,
+           COUNT(id) AS product_count,
+           SUM(stock_quantity * selling_price) AS total_value
+    FROM Product
+    WHERE companyId = ${companyId}
+    GROUP BY categoryId
+  `;
+
+  const categoryIds = result.map(g => g.categoryId).filter(Boolean);
+  const categories = await prisma.category.findMany({
+    where: { id: { in: categoryIds } },
   });
 
-  return Promise.all(
-    groups.map(async (g) => {
-      const cat = g.categoryId
-        ? await prisma.category.findUnique({ where: { id: g.categoryId } })
-        : null;
-      return { category: cat?.name ?? 'Sans catégorie', count: g._count.id };
-    })
-  );
+  return result.map((g) => {
+    const cat = categories.find(c => c.id === g.categoryId);
+    return {
+      category: cat?.name ?? 'Sans catégorie',
+      product_count: Number(g.product_count),
+      total_value: Number(g.total_value ?? 0),
+    };
+  });
 };
 
 // Produits avec leur fournisseur
