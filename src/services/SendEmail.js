@@ -1,14 +1,13 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EmailUser,
+    pass: process.env.EmailPassword,
+  },
+});
 
-const transporter =nodemailer.createTransport({
-    service:"gmail",
-    auth:{
-        user:process.env.EmailUser,
-        pass:process.env.EmailPassword
-    }
-})
- 
 const htmlTemplate = (username, otpDigits) => `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -216,52 +215,57 @@ const htmlTemplate = (username, otpDigits) => `<!DOCTYPE html>
 </div>
 </body>
 </html>`;
-const sendEmailVerificationCode=async(email, username, code)=>{
-    try{
-        const otpDigits = String(code).split('').map((digit, index) => `<div class="otp-digit ${index === 0 ? 'accent' : ''}">${digit}</div>`).join('');
-        const mailOptions={
-            from:process.env.EmailUser,
-            to:email,
-            subject:`Votre code de vérification Fluxio : ${code}`,
-            text:`Hello ${username}, 
+const sendEmailVerificationCode = async (email, username, code) => {
+  try {
+    const otpDigits = String(code)
+      .split('')
+      .map((digit, index) => `<div class="otp-digit ${index === 0 ? 'accent' : ''}">${digit}</div>`)
+      .join('');
+    const mailOptions = {
+      from: process.env.EmailUser,
+      to: email,
+      subject: `Votre code de vérification Fluxio : ${code}`,
+      text: `Hello ${username}, 
                     Pour activer votre compte, utilisez le code de vérification ci-dessous :
                     ${code}
                     Si vous n'avez pas initié cette demande, veuillez ignorer cet e-mail.
                     Cordialement,
                     L'équipe Fluxio
                     © 2026 Fluxio. Tous droits réservés.`,
-                    html:htmlTemplate(username, otpDigits)    
-        }
-        await transporter.sendMail(mailOptions);
-        console.log("Email sent successfully");
-    }catch(error){
-        console.log(error);
-    }
-}
+      html: htmlTemplate(username, otpDigits),
+    };
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully');
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-const sendEmailResetCode=async(email, username, code)=>{
-    try{
-        
-        const otpDigits = String(code).split('').map((digit, index) => `<div class="otp-digit ${index === 0 ? 'accent' : ''}">${digit}</div>`).join('');
-        const mailOptions={
-            from:process.env.EmailUser,
-            to:email,
-            subject:`Votre code de réinitialisation de mot de passe Fluxio : ${code}`,
-            text:`Hello ${username}, 
+const sendEmailResetCode = async (email, username, code) => {
+  try {
+    const otpDigits = String(code)
+      .split('')
+      .map((digit, index) => `<div class="otp-digit ${index === 0 ? 'accent' : ''}">${digit}</div>`)
+      .join('');
+    const mailOptions = {
+      from: process.env.EmailUser,
+      to: email,
+      subject: `Votre code de réinitialisation de mot de passe Fluxio : ${code}`,
+      text: `Hello ${username}, 
                     Pour réinitialiser votre mot de passe, utilisez le code de réinitialisation ci-dessous :
                     ${code}
                     Si vous n'avez pas initié cette demande, veuillez ignorer cet e-mail.
                     Cordialement,
                     L'équipe Fluxio
-                    © 2026 Fluxio. Tous droits réservés.`,    
-                    html:htmlTemplate(username, otpDigits)    
-        }
-        console.log("prepare email")
-        await transporter.sendMail(mailOptions);
-        console.log("Email sent successfully");
-    }catch(error){
-        console.log(error);
-    }
-}
+                    © 2026 Fluxio. Tous droits réservés.`,
+      html: htmlTemplate(username, otpDigits),
+    };
+    console.log('prepare email');
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully');
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-module.exports={sendEmailVerificationCode,sendEmailResetCode}
+module.exports = { sendEmailVerificationCode, sendEmailResetCode };

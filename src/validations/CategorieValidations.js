@@ -3,41 +3,29 @@ const { z } = require('zod');
 // ─── Schemas ────────────────────────────────────────────────────────────────
 
 const categorieRegistrationSchema = z.object({
-    name: z
-        .string({ required_error: 'Le nom de la catégorie est requis' })
-        .trim()
-        .min(1, 'Le nom de la catégorie est requis'),
+  name: z
+    .string({ required_error: 'Le nom de la catégorie est requis' })
+    .trim()
+    .min(1, 'Le nom de la catégorie est requis'),
 
-    code: z
-        .union([z.string(), z.number()])
-        .transform((v) => parseInt(String(v).trim()))
-        .refine((v) => !isNaN(v) && v > 0, { message: 'Le code doit être un entier positif' }),
+  code: z
+    .union([z.string(), z.number()])
+    .transform((v) => parseInt(String(v).trim()))
+    .refine((v) => !isNaN(v) && v > 0, { message: 'Le code doit être un entier positif' }),
 
-    description: z
-        .string()
-        .trim()
-        .optional()
-        .nullable(),
+  description: z.string().trim().optional().nullable(),
 });
 
 const categorieUpdateSchema = z.object({
-    name: z
-        .string()
-        .trim()
-        .min(1, 'Le nom ne peut pas être vide')
-        .optional(),
+  name: z.string().trim().min(1, 'Le nom ne peut pas être vide').optional(),
 
-    code: z
-        .union([z.string(), z.number()])
-        .transform((v) => parseInt(String(v).trim()))
-        .refine((v) => !isNaN(v) && v > 0, { message: 'Le code doit être un entier positif' })
-        .optional(),
+  code: z
+    .union([z.string(), z.number()])
+    .transform((v) => parseInt(String(v).trim()))
+    .refine((v) => !isNaN(v) && v > 0, { message: 'Le code doit être un entier positif' })
+    .optional(),
 
-    description: z
-        .string()
-        .trim()
-        .optional()
-        .nullable(),
+  description: z.string().trim().optional().nullable(),
 });
 
 // ─── Helper ──────────────────────────────────────────────────────────────────
@@ -48,17 +36,17 @@ const categorieUpdateSchema = z.object({
  * @returns {{ errors: Object, isValid: boolean }}
  */
 const formatResult = (result) => {
-    if (result.success) {
-        return { errors: {}, isValid: true };
+  if (result.success) {
+    return { errors: {}, isValid: true };
+  }
+  const errors = {};
+  result.error.issues.forEach(({ path, message }) => {
+    const key = path[0];
+    if (key && !errors[key]) {
+      errors[key] = message;
     }
-    const errors = {};
-    result.error.issues.forEach(({ path, message }) => {
-        const key = path[0];
-        if (key && !errors[key]) {
-            errors[key] = message;
-        }
-    });
-    return { errors, isValid: false };
+  });
+  return { errors, isValid: false };
 };
 
 // ─── Exported validators ─────────────────────────────────────────────────────
@@ -67,17 +55,16 @@ const formatResult = (result) => {
  * Valide les données de création d'une catégorie.
  */
 const validateCategorieRegistration = (data) =>
-    formatResult(categorieRegistrationSchema.safeParse(data));
+  formatResult(categorieRegistrationSchema.safeParse(data));
 
 /**
  * Valide les données de mise à jour d'une catégorie.
  */
-const validateCategorieUpdate = (data) =>
-    formatResult(categorieUpdateSchema.safeParse(data));
+const validateCategorieUpdate = (data) => formatResult(categorieUpdateSchema.safeParse(data));
 
 module.exports = {
-    validateCategorieRegistration,
-    validateCategorieUpdate,
-    categorieRegistrationSchema,
-    categorieUpdateSchema,
+  validateCategorieRegistration,
+  validateCategorieUpdate,
+  categorieRegistrationSchema,
+  categorieUpdateSchema,
 };

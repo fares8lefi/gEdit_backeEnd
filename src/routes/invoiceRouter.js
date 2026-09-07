@@ -13,6 +13,10 @@ router.get('/getAllInvoices', requireAuthUser, invoiceController.getAllInvoices)
 router.get('/getInvoiceDataForPdf/:id', requireAuthUser, invoiceController.getInvoiceDataForPdf);
 
 // Changer le statut d'une facture (PENDING, PAID, CANCELLED)
-router.put('/updateInvoiceStatus/:id/status', requireAuthUser, invoiceController.updateInvoiceStatus);
+router.put(
+  '/updateInvoiceStatus/:id/status',
+  requireAuthUser,
+  invoiceController.updateInvoiceStatus
+);
 
 module.exports = router;

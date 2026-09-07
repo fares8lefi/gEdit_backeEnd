@@ -1,33 +1,32 @@
-const  express = require('express');
+const express = require('express');
 const router = express.Router();
 
-const userController = require('../controllers/userController')
-const {requireAuthUser}= require("../middlewares/authMiddelwares");
+const userController = require('../controllers/userController');
+const { requireAuthUser } = require('../middlewares/authMiddelwares');
 
-const {isAdmin}= require("../middlewares/isAdminMiddelware");
+const { isAdmin } = require('../middlewares/isAdminMiddelware');
 /* GET users listing. */
 //post
-router.post('/createUser',userController.createUser)
-router.post('/loginUser',userController.loginUser)
-router.post('/refreshToken',userController.refreshToken)
+router.post('/createUser', userController.createUser);
+router.post('/loginUser', userController.loginUser);
+router.post('/refreshToken', userController.refreshToken);
 router.post('/logOutUser', requireAuthUser, userController.logOutUser);
-router.post('/changePassword',requireAuthUser,userController.changePassword)
-router.post('/resendCode',userController.resendCode)
-router.post('/forgetPassword', userController.forgetPassword)
+router.post('/resendCode', userController.resendCode);
+router.post('/forgetPassword', userController.forgetPassword);
 
 //put
-router.put('/updatePersonnelData',requireAuthUser,userController.updatePersonnelData)
-router.put('/updateUserStatus',requireAuthUser,userController.updateUserStatus)
-router.put('/foorgetPasswordVerifyCode',userController.foorgetPasswordVerifyCode)
-router.put('/verifyAccounts',userController.verifyAccounts)
-
+router.put('/updatePersonnelData', requireAuthUser, userController.updatePersonnelData);
+router.put('/updateUserStatus', requireAuthUser, userController.updateUserStatus);
+router.put('/foorgetPasswordVerifyCode', userController.foorgetPasswordVerifyCode);
+router.put('/verifyAccounts', userController.verifyAccounts);
+router.put('/changePassword', requireAuthUser, userController.changePassword);
 
 //get
 router.get('/me', requireAuthUser, userController.getMe);
-router.get('/getAllUsers',requireAuthUser,isAdmin,userController.getAllUsers)
-router.get('/getConnectedUser',requireAuthUser,isAdmin,userController.getConnectedUser)
+router.get('/getAllUsers', requireAuthUser, isAdmin, userController.getAllUsers);
+router.get('/getConnectedUser', requireAuthUser, isAdmin, userController.getConnectedUser);
 
 //delete
-router.delete('/:id', requireAuthUser, isAdmin, userController.deleteUser)
+router.delete('/:id', requireAuthUser, isAdmin, userController.deleteUser);
 
 module.exports = router;
